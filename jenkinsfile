@@ -1,7 +1,6 @@
 pipeline {
     agent any 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         DOCKER_IMAGE = "akashsakore/flask-app"
     }
     stages {
@@ -11,9 +10,8 @@ pipeline {
             }
         }
         stage('build') {
-            steps{
+            steps {
                 echo "building docker image"
-                sh 'echo $DOCKERHUB_CREDENTIALS_USR'
             }
         }
         stage('test') {
@@ -35,14 +33,17 @@ pipeline {
         stage('docker build') {
             steps {
                 echo 'building docker image'
-                sh 'docker pull $DOCKER_IMAGE'
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
         stage('docker push') {
             steps {
-                echo 'pushing docker image'
-                echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                sh 'docker push $DOCKER_IMAGE'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
+                    sh '''
+                      echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                      docker push $DOCKER_IMAGE
+                    '''
+                }
             }
         }
     }
