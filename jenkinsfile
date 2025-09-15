@@ -1,21 +1,39 @@
 pipeline {
-    agent any
+    agent any 
     stages{
         stage('checkout') {
-            steps {
+            steps{
+                echo "pulling code from git repo"
+                //git url
                 git branch: 'main', url: 'https://github.com/akashsakore/test.git'
             }
+
         }
         stage('build') {
-            steps{
-                dir('simple-java-maven-app')
-                sh 'mvn clean package'
+            steps {
+                echo "building the project"
+                sh 'python --version'
             }
         }
         stage('test') {
-            steps{
-                sh 'mvn test'
+            steps {
+                echo "eunning test"
+                sh 'pytest tests'
             }
+        }
+        stage('deploy') {
+            steps {
+                echo "deployment"
+                sh 'echo deployment completed'
+            }
+        }
+    }
+    post{
+        success {
+            echo "Pipeline executed successfully"
+        }
+        failure {
+            echo "Pipeline failed"
         }
     }
 }
