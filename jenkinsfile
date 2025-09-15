@@ -1,18 +1,19 @@
 pipeline {
     agent any 
-    stages{
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKER_IMAGE = "akashsakore/flask-app:latest"
+    }
+    stages {
         stage('checkout') {
-            steps{
-                echo "pulling code from git repo"
-                //git url
+            steps {
                 git branch: 'main', url: 'https://github.com/akashsakore/test.git'
             }
-
         }
         stage('build') {
-            steps {
-                echo "building the project"
-                sh 'python3 --version'
+            steps{
+                echo "building docker image"
+                sh 'echo $DOCKERHUB_CREDENTIALS_USR'
             }
         }
         stage('test') {
@@ -31,19 +32,17 @@ pipeline {
                 '''
             }
         }
-        stage('deploy') {
+        stage('docker build') {
             steps {
-                echo "deployment"
-                sh 'echo deployment completed'
+                echo 'building docker image'
+                sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
             }
         }
-    }
-    post{
-        success {
-            echo "Pipeline executed successfully"
-        }
-        failure {
-            echo "Pipeline failed"
+        stage('docker push') {
+            steps {
+                echo 'pushing docker image'
+                sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
+            }
         }
     }
 }
