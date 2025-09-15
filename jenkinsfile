@@ -35,7 +35,7 @@ pipeline {
         stage('docker build') {
             steps {
                 echo 'building docker image'
-                sh 'docker pull -t $DOCKER_IMAGE .'
+                sh 'docker pull $DOCKER_IMAGE'
             }
         }
         stage('docker push') {
