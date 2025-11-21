@@ -7,11 +7,6 @@ pipeline {
         jdk 'java17'
     }
     stages {
-        stage("cleanup") {
-            steps {
-                cleanWS()
-            }
-        }
         stage("checkout from scm") {
             steps {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/akashsakore/test.git' 
