@@ -1,10 +1,30 @@
 pipeline {
-    agent any
-
+    agent {
+        label 'jenkins-agent-node'
+    }
+    tools {
+        maven 'maven'
+        jdk 'java17'
+    }
     stages {
-        stage('Hello') {
+        stage("cleanup") {
             steps {
-                echo 'Hello World'
+                cleanWS()
+            }
+        }
+        stage("checkout from scm) {
+            steps {
+                git branch: 'main', credentialsID: 'github', url: 'https://github.com/akashsakore/test.git' 
+            }
+        }
+        stage("build app) {
+            steps {
+                sh 'mvn clean packege'
+            }
+        }
+        stage("test app") {
+            steps {
+                sh 'mvn test'
             }
         }
     }
