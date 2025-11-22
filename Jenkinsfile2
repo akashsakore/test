@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-                echo 'Hello World'
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/akashsakore/test.git'
             }
         }
     }
