@@ -15,5 +15,15 @@ pipeline {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/akashsakore/test.git'
             }
         }
+          stage("build app") {
+            steps {
+                sh 'mvn clean packege'
+            }
+        }
+          stage("test app") {
+            steps {
+                sh 'mvn test'
+            }
+        }
     }
 }
