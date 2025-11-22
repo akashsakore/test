@@ -2,6 +2,9 @@ pipeline {
     agent {
         label 'jenkins-node-1'
     }
+    triggers {
+        pollSCM('')
+    }
     tools {
         jdk 'java17'
         maven 'maven'
