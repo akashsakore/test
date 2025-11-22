@@ -2,9 +2,12 @@ pipeline {
     agent {
         label 'jenkins-node-1'
     }
-
+    tools {
+        jdk 'java17'
+        maven 'maven'
+    }
     stages {
-        stage('Hello') {
+        stage('checkout') {
             steps {
                 echo 'Hello World'
             }
